@@ -4,6 +4,10 @@ package textExcel;
 
 public class Spreadsheet implements Grid
 {
+	private int rows = 20;
+	private int cols = 12;
+	private int[][] arrayExcell = new int[rows][cols];
+	
 
 	@Override
 	public String processCommand(String command)
@@ -15,15 +19,13 @@ public class Spreadsheet implements Grid
 	@Override
 	public int getRows()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.rows;
 	}
 
 	@Override
 	public int getCols()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.cols;
 	}
 
 	@Override
