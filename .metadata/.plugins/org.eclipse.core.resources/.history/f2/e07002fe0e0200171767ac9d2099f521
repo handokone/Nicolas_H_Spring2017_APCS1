@@ -1,7 +1,5 @@
 package textExcel;
 
-//Class that returns empty cells
-
 public class EmptyCell implements Cell {
 
 	@Override

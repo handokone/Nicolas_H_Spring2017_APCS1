@@ -3,25 +3,24 @@ package textExcel;
 
 public class SpreadsheetLocation implements Location
 {
-	private String loc;
-
+	private String location;
+    @Override
     public int getRow()
     {
-        int rows = Integer.parseInt(loc.substring(1));
+        int rows = Integer.parseInt(location.substring(1));
         return rows - 1;
     }
 
+    @Override
     public int getCol()
     {
-        char collumn = loc.charAt(0);
-        int cols = (int) collumn;
-        //Implementation of ASCII table 
-        return cols - 65;
+        int collumn = Integer.parseInt(location.substring(1));
+        return collumn - 1;
     }
     
     public SpreadsheetLocation(String cellName)
     {
-    	this.loc = cellName;
+    	location = cellName;
     }
 
 }
