@@ -1,15 +1,15 @@
 package textExcel;
 
-//Class that returns empty cells
-
-public class EmptyCell implements Cell {
+public class TextCell implements Cell {
+	
+	private String strContent;
 
 	public String abbreviatedCellText() {
-		return "";
+		return null;
 	}
 
 	public String fullCellText() {
-		return "";
+		return null;
 	}
 
 }
