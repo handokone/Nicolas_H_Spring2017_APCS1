@@ -15,7 +15,9 @@ public class SpreadsheetLocation implements Location
     {
         char collumn = loc.charAt(0);
         int cols = (int) collumn;
-        return cols - 'A';
+        //Implementation of ASCII table 
+        //Capital A starts at 65 on the ASCII table
+        return cols - 65;
     }
     
     public SpreadsheetLocation(String cellName)

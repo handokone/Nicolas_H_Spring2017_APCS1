@@ -4,7 +4,7 @@ public class Spreadsheet implements Grid
 {
 	private int rows = 20;
 	private int cols = 12;
-	private Cell[][] arrayExcell = new EmptyCell[rows][cols];
+	private int[][] arrayExcell = new int[rows][cols];
 	
 	private String fullGrid = "";
 
@@ -30,15 +30,12 @@ public class Spreadsheet implements Grid
 
 	public String getGridText()
 	{
-		/*for(int i = 0; i < rows; i++){
+		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
 				fullGrid = fullGrid + arrayExcell[i][j];
 			}
 		}
 		return fullGrid;
-		*/
-		//Cell[][] sprsht = new EmptyCell[rows][cols];
-		//Use this to put in the cells. 
 	}
 
 }

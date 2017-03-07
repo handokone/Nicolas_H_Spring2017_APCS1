@@ -17,7 +17,7 @@ public class TextCell implements Cell {
 		return null;
 	}
 	
-	public void setValue(String strContent){
+	public void setText(String strContent){
 		this.strContent = strContent;
 	}
 
