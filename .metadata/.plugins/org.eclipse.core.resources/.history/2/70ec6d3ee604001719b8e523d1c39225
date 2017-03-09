@@ -12,7 +12,7 @@ public class EmptyCell implements Cell {
 		return "";
 	}
 	
-	public EmptyCell(String s){
+	public EmptyCell(){
 		
 	}
 

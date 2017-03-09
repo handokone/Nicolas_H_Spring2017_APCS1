@@ -48,18 +48,17 @@ public class Spreadsheet implements Grid
 		System.out.println("");
 		
 		for(int i = 1; i < 21; i++){
-			if(i < 10){
+			if(i < 9){
 				System.out.print(i + "  ");
 				for(int j = 0; j < 13; j++){
 					System.out.print("|          ");
 				}
 				System.out.println("");
-			}if(i > 10){
+			}else{
 				System.out.print(i + " ");
 				for(int j = 0; j < 13; j++){
 					System.out.print("|          "); 
 				}
-				System.out.println("");
 			}
 		}
 		return "";
