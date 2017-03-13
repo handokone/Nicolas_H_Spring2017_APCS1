@@ -13,7 +13,7 @@ public class TextExcel
 	    Scanner userInput = new Scanner(System.in);
 	    String userScannerInput = userInput.next();
 	    while(!userScannerInput.equals("quit")){
-	    	sheets.processCommand(userScannerInput);
+	    	System.out.println(sheets.processCommand(userScannerInput));
 	    	userScannerInput = userInput.next();
 	    }
 	}

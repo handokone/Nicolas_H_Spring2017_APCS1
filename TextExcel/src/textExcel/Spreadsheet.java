@@ -4,22 +4,43 @@ public class Spreadsheet implements Grid
 {
 	private int rows = 20;
 	private int cols = 12;
+	private Cell[][] arrayExcell = new Cell[rows][cols];
 	public Spreadsheet(){
-		Cell[][] arrayExcell = new EmptyCell[rows][cols];
+		for(int i = 0; i < 20; i++){
+			for(int j = 0; j < 12; j++){
+				arrayExcell[i][j] = new EmptyCell();
+			}
+		}
 	}
 	
 	private String fullGrid = "";
 
 	public String processCommand(String command)
 	{
-		if(command.toLowerCase().equals("clear")){
-			for(int i = 0; i < 20; i++){
-				for(int j = 0; j < 12; j++){
-					arrayExcell[i][j] = new EmptyCell(command);
-				}
+		String[] commandSplit = command.split(" ");
+		if(command.length() == 0){
+			return null;
+		}else if(command.length() <= 3){
+			return checkCell(commandSplit[0]);
+		}else if(command.toLowerCase().contains("clear")){
+			if(commandSplit.length == 1){
+				clearCell();
+				return getGridText();
+			}else {
+				clearOneCell(commandSplit[1].toUpperCase());
+				return getGridText();
 			}
+		}else if(commandSplit.length >= 3){
+			String input = commandSplit[2];
+			int count = 3;
+			while(count < commandSplit.length){
+				input += " " + commandSplit[count];
+				count++;
+			}
+			assignCell(input, commandSplit[0].toUpperCase());
+			return getGridText();
 		}
-		return command;
+		return "";
 	}
 
 	public int getRows()
@@ -34,35 +55,60 @@ public class Spreadsheet implements Grid
 
 	public Cell getCell(Location loc)
 	{
-		return null;
+		return arrayExcell[loc.getRow()][loc.getCol()];
 	}
 
 	public String getGridText()
 	{
-		System.out.print("   |");
+		String gridText = "   |";
 		
 		for(char a = 'A'; a < 'M'; a++){
-			System.out.print(a + "         |");
+			gridText += a + "         |";
 		}
 		
-		System.out.println("");
+		gridText += "\n";
 		
 		for(int i = 1; i < 21; i++){
 			if(i < 10){
-				System.out.print(i + "  ");
+				gridText += i + "  ";
 				for(int j = 0; j < 13; j++){
-					System.out.print("|          ");
+					gridText += arrayExcell[i-1][j-1].abbreviatedCellText() + "|";
 				}
-				System.out.println("");
-			}if(i > 10){
-				System.out.print(i + " ");
+				gridText += "\n";
+			}else if(i >= 10){
+				gridText += i + " ";
 				for(int j = 0; j < 13; j++){
-					System.out.print("|          "); 
+					gridText += arrayExcell[i-1][j-1].abbreviatedCellText() + "|"; 
 				}
-				System.out.println("");
+				gridText += "\n";
+			}
+			gridText += "\n";
+		}
+		return gridText;
+	}
+	
+	public void clearCell(){
+		for(int i = 0; i < 20; i++){
+			for(int j = 0; j < 12; i++){
+				arrayExcell[i][j] = new EmptyCell();
 			}
 		}
-		return "";
+	}
+	
+	public void clearOneCell(String cellName){
+		SpreadsheetLocation clearACell = new SpreadsheetLocation(cellName);
+		arrayExcell[clearACell.getRow()][clearACell.getCol()] = new EmptyCell();
+	}
+	
+	public void assignCell(String userInput, String cellName){
+		SpreadsheetLocation cellAssign = new SpreadsheetLocation(cellName);
+		arrayExcell[cellAssign.getRow()][cellAssign.getCol()] = new TextCell(userInput);
+	}
+	
+	public String checkCell(String cellName){
+		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
+		String check = arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
+		return check;
 	}
 
 }

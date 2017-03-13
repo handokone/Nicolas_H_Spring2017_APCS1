@@ -20,7 +20,7 @@ public class SpreadsheetLocation implements Location
     
     public SpreadsheetLocation(String cellName)
     {
-    	this.loc = cellName;
+    	loc = cellName;
     }
 
 }

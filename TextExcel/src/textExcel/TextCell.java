@@ -1,23 +1,37 @@
 package textExcel;
 
 public class TextCell implements Cell {
-	
+
 	private String strContent = "";
 	private String[] arraysChar = strContent.split("");
-	private String abbreviatedText;
 
 	public String abbreviatedCellText() {
-		for(int i = 0; i < 10; i++){
-			abbreviatedText = abbreviatedText + arraysChar[i];
+		String abbreviatedText = "";
+		if(strContent.contains("\"")){
+			abbreviatedText = strContent.substring(1, strContent.length() - 1);
 		}
-		return abbreviatedText;
+		if(strContent.length() == 10){
+			for(int i = 0; i < 10; i++){
+				abbreviatedText = abbreviatedText + arraysChar[i];
+			}
+			return abbreviatedText;
+		}else{
+			while(abbreviatedText.length() != 0){
+				abbreviatedText = abbreviatedText + " ";
+			}
+			return abbreviatedText;
+		}
 	}
 
 	public String fullCellText() {
-		return null;
+		return strContent;
 	}
 	
 	public void setValue(String strContent){
+		this.strContent = strContent;
+	}
+	
+	public TextCell(String strContent){
 		this.strContent = strContent;
 	}
 
