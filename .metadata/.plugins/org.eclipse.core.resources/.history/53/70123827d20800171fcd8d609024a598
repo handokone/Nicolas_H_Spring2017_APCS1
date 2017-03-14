@@ -16,7 +16,7 @@ public class Spreadsheet implements Grid
 	public String processCommand(String command)
 	{
 		String[] commandSplit = command.split(" ");
-		commandSplit[0] = commandSplit[0].toLowerCase();
+		commandSplit[0] = commandSplit[0].toUpperCase();
 		
 		if(command.length() == 0){
 			return "";
@@ -32,7 +32,7 @@ public class Spreadsheet implements Grid
 			return getGridText();
 		}else if(command.length() <= 3){
 			return checkCell(commandSplit[0].toUpperCase());
-		}else if(commandSplit[0].contains("clear")){
+		}else if(commandSplit[0].contains("CLEAR")){
 			if(commandSplit.length == 1){
 				clearCell();
 				return getGridText();

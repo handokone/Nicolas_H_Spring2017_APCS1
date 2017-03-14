@@ -27,8 +27,7 @@ public class Spreadsheet implements Grid
 				input += " " + commandSplit[count];
 				count++;
 			}
-			String cellName = commandSplit[0].toUpperCase();
-			assignCell(input, cellName);
+			assignCell(input, commandSplit[0].toUpperCase());
 			return getGridText();
 		}else if(command.length() <= 3){
 			return checkCell(commandSplit[0].toUpperCase());

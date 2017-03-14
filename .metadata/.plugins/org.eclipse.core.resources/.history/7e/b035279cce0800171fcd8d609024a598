@@ -2,7 +2,8 @@ package textExcel;
 
 public class TextCell implements Cell {
 
-	private String strContent;
+	private String strContent = "";
+	private String[] arraysChar = strContent.split("");
 
 	public String abbreviatedCellText() {
 		String abbreviatedText = "";
