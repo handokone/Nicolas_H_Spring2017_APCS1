@@ -11,15 +11,25 @@ public class Spreadsheet implements Grid
 				arrayExcell[i][j] = new EmptyCell();
 			}
 		}
-	} 
+	}
+	
+	private String fullGrid = "";
 
 	public String processCommand(String command)
 	{
 		String[] commandSplit = command.split(" ");
-		commandSplit[0] = commandSplit[0].toLowerCase();
-		
 		if(command.length() == 0){
-			return "";
+			return null;
+		}else if(command.length() <= 3){
+			return checkCell(commandSplit[0]);
+		}else if(command.toLowerCase().contains("clear")){
+			if(commandSplit.length == 1){
+				clearCell();
+				return getGridText();
+			}else {
+				clearOneCell(commandSplit[1].toUpperCase());
+				return getGridText();
+			}
 		}else if(commandSplit.length >= 3){
 			String input = commandSplit[2];
 			int count = 3;
@@ -29,16 +39,6 @@ public class Spreadsheet implements Grid
 			}
 			assignCell(input, commandSplit[0].toUpperCase());
 			return getGridText();
-		}else if(command.length() <= 3){
-			return checkCell(commandSplit[0].toUpperCase());
-		}else if(commandSplit[0].contains("clear")){
-			if(commandSplit.length == 1){
-				clearCell();
-				return getGridText();
-			}else {
-				clearOneCell(commandSplit[1].toUpperCase());
-				return getGridText();
-			}
 		}
 		return "";
 	}
@@ -66,20 +66,24 @@ public class Spreadsheet implements Grid
 			gridText += a + "         |";
 		}
 		
-		for(int i = 1; i <= rows; i++){
-			
-			gridText += "\n" + i;
-			
-			if(i < 10){
-				gridText += "  |";
-			}else if(i >= 10){
-				gridText += " |";
-			}
-			for(int j = 0; j < cols; j++){
-				gridText += arrayExcell[i-1][j].abbreviatedCellText() + "|";
-			}
-		}
 		gridText += "\n";
+		
+		for(int i = 1; i < 21; i++){
+			if(i < 10){
+				gridText += i + "  ";
+				for(int j = 0; j < 13; j++){
+					gridText += arrayExcell[i-1][j-1].abbreviatedCellText() + "|";
+				}
+				gridText += "\n";
+			}else if(i >= 10){
+				gridText += i + " ";
+				for(int j = 0; j < 13; j++){
+					gridText += arrayExcell[i-1][j-1].abbreviatedCellText() + "|"; 
+				}
+				gridText += "\n";
+			}
+			gridText += "\n";
+		}
 		return gridText;
 	}
 	

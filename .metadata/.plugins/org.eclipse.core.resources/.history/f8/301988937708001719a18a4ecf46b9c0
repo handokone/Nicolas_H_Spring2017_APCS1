@@ -11,13 +11,13 @@ public class Spreadsheet implements Grid
 				arrayExcell[i][j] = new EmptyCell();
 			}
 		}
-	} 
+	}
+	
+	private String fullGrid = "";
 
 	public String processCommand(String command)
 	{
 		String[] commandSplit = command.split(" ");
-		commandSplit[0] = commandSplit[0].toLowerCase();
-		
 		if(command.length() == 0){
 			return "";
 		}else if(commandSplit.length >= 3){
@@ -30,8 +30,8 @@ public class Spreadsheet implements Grid
 			assignCell(input, commandSplit[0].toUpperCase());
 			return getGridText();
 		}else if(command.length() <= 3){
-			return checkCell(commandSplit[0].toUpperCase());
-		}else if(commandSplit[0].contains("clear")){
+			return checkCell(commandSplit[0]);
+		}else if(commandSplit[0].toLowerCase().contains("clear")){
 			if(commandSplit.length == 1){
 				clearCell();
 				return getGridText();
