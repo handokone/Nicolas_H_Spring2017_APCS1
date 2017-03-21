@@ -5,24 +5,32 @@ public class Spreadsheet implements Grid
 	private int rows = 20;
 	private int cols = 12;
 	private Cell[][] arrayExcell = new Cell[rows][cols];
+	
 	public Spreadsheet(){
 		for(int i = 0; i < 20; i++){
 			for(int j = 0; j < 12; j++){
 				arrayExcell[i][j] = new EmptyCell();
 			}
 		}
-	}
-	
-	private String fullGrid = "";
+	} 
 
 	public String processCommand(String command)
 	{
 		String[] commandSplit = command.split(" ");
+		
 		if(command.length() == 0){
 			return "";
 		}else if(command.length() <= 3){
-			return checkCell(commandSplit[0]);
-		}else if(command.toLowerCase().contains("clear")){
+			return checkCell(commandSplit[0].toUpperCase());
+		}else if(commandSplit.length >= 3){
+			String input = commandSplit[2];
+			for(int i = 3; i < commandSplit.length; i++){
+				input += " " + commandSplit[i];
+			}
+			String cellName = commandSplit[0].toUpperCase();
+			assignCell(input, cellName);
+			return getGridText();
+		}else if(commandSplit[0].toLowerCase().contains("clear")){
 			if(commandSplit.length == 1){
 				clearCell();
 				return getGridText();
@@ -30,15 +38,6 @@ public class Spreadsheet implements Grid
 				clearOneCell(commandSplit[1].toUpperCase());
 				return getGridText();
 			}
-		}else if(commandSplit.length >= 3){
-			String input = commandSplit[2];
-			int count = 3;
-			while(count < commandSplit.length){
-				input += " " + commandSplit[count];
-				count++;
-			}
-			assignCell(input, commandSplit[0].toUpperCase());
-			return getGridText();
 		}
 		return "";
 	}
@@ -72,20 +71,20 @@ public class Spreadsheet implements Grid
 			
 			if(i < 10){
 				gridText += "  |";
-			}else if(i >= 10){
+			}else{
 				gridText += " |";
 			}
 			for(int j = 0; j < cols; j++){
 				gridText += arrayExcell[i-1][j].abbreviatedCellText() + "|";
 			}
 		}
-		gridText += "\n";
+		//gridText += "\n";
 		return gridText;
 	}
 	
 	public void clearCell(){
-		for(int i = 0; i < 20; i++){
-			for(int j = 0; j < 12; i++){
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; i++){
 				arrayExcell[i][j] = new EmptyCell();
 			}
 		}
@@ -103,8 +102,7 @@ public class Spreadsheet implements Grid
 	
 	public String checkCell(String cellName){
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
-		String check = arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
-		return check;
+		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
 	}
 
 }
