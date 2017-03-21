@@ -21,9 +21,5 @@ public abstract class RealCell implements Cell{
 	}
 	
 	public abstract double getDoubleValue();
-	
-	public void setRealCell(String inputVal){
-		userInput = inputVal;
-	}
 
 }

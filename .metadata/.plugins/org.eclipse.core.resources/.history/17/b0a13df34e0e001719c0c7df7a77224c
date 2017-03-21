@@ -2,7 +2,6 @@ package textExcel;
 
 public class FormulaCell extends RealCell{
 	private String value = "";
-	
 	public FormulaCell(String userInput){
 		value = userInput;
 		
