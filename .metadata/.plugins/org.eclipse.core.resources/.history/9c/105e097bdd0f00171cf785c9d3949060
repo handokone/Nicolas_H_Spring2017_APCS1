@@ -21,7 +21,7 @@ public class TextCell implements Cell {
 			return abbreviatedText.substring(0, 10);
 		}else{
 			while(abbreviatedText.length() < 10){
-				abbreviatedText = abbreviatedText + " ";
+				abbreviatedText += abbreviatedText + " ";
 			}
 			return abbreviatedText;
 		}

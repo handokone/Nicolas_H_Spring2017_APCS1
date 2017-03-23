@@ -1,9 +1,10 @@
 package textExcel;
 
 public class FormulaCell extends RealCell{
-
+	private String value = "";
+	
 	public FormulaCell(String userInput){
-		super(userInput);
+		value = userInput;
 		
 	}
 	

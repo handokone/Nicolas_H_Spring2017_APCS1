@@ -18,7 +18,8 @@ public class TextCell implements Cell {
 			}
 		}
 		if(strContent.length() > 10){
-			return abbreviatedText.substring(0, 10);
+			abbreviatedText = abbreviatedText.substring(0,10);
+			return abbreviatedText;
 		}else{
 			while(abbreviatedText.length() < 10){
 				abbreviatedText = abbreviatedText + " ";
