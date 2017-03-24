@@ -67,7 +67,7 @@ public class Spreadsheet implements Grid
 		String gridText = "   |";
 		
 		for(char a = 'A'; a < 'M'; a++){
-			gridText = gridText + a + "         |";
+			gridText += a + "         |";
 		}
 		
 		for(int i = 1; i <= rows; i++){
@@ -100,11 +100,6 @@ public class Spreadsheet implements Grid
 	public String checkCell(String cellName){
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
 		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
-	}
-	
-	public void assignPercentCell(String userInput, String cellName){
-		SpreadsheetLocation percentCellAssign = new SpreadsheetLocation(cellName);
-		arrayExcell[percentCellAssign.getRow()][percentCellAssign.getCol()] = new PercentCell(userInput);
 	}
 
 }

@@ -17,6 +17,15 @@ public class TextCell implements Cell {
 				abbreviatedText += charArray[i];
 			}
 		}
+		/*if(strContent.length() > 10){
+			return abbreviatedText.substring(0, 10);
+		}else{
+			while(abbreviatedText.length() < 10){
+				abbreviatedText = abbreviatedText + " ";
+			}
+			return abbreviatedText;
+		}
+		*/
 		return (abbreviatedText + "          ").substring(0, 10);
 	}
 

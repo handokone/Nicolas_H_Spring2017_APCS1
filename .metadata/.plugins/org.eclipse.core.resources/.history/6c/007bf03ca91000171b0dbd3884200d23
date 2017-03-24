@@ -101,10 +101,5 @@ public class Spreadsheet implements Grid
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
 		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
 	}
-	
-	public void assignPercentCell(String userInput, String cellName){
-		SpreadsheetLocation percentCellAssign = new SpreadsheetLocation(cellName);
-		arrayExcell[percentCellAssign.getRow()][percentCellAssign.getCol()] = new PercentCell(userInput);
-	}
 
 }
