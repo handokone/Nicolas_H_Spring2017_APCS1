@@ -17,6 +17,9 @@ public class PercentCell extends RealCell{
 	public String fullCellText(){
 		return userInput;
 	}
-
+	
+	public String abbreviatedCellText{
+		
+	}
 
 }

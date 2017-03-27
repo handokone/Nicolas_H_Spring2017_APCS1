@@ -93,22 +93,18 @@ public class Spreadsheet implements Grid
 	}
 	
 	public void assignCell(String userInput, String cellName){
-		SpreadsheetLocation assign = new SpreadsheetLocation(cellName);
-		if(userInput.contains("%")){
-			arrayExcell[assign.getRow()][assign.getCol()] = new PercentCell(userInput);
-		}else if(userInput.contains("(")){
-			arrayExcell[assign.getRow()][assign.getCol()] = new FormulaCell(userInput);
-		}else if(userInput.contains("\"")){
-			arrayExcell[assign.getRow()][assign.getCol()] = new TextCell(userInput);
-		}else{
-			arrayExcell[assign.getRow()][assign.getCol()] = new ValueCell(userInput);
-		}
+		SpreadsheetLocation cellAssign = new SpreadsheetLocation(cellName);
+		arrayExcell[cellAssign.getRow()][cellAssign.getCol()] = new TextCell(userInput);
 	}
 	
 	public String checkCell(String cellName){
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
 		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
 	}
-
+	
+	public void assignPercentCell(String userInput, String cellName){
+		SpreadsheetLocation percentCellAssign = new SpreadsheetLocation(cellName);
+		arrayExcell[percentCellAssign.getRow()][percentCellAssign.getCol()] = new PercentCell(userInput);
+	}
 
 }
