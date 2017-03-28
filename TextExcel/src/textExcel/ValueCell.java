@@ -2,12 +2,15 @@ package textExcel;
 
 public class ValueCell extends RealCell{
 	
-	public ValueCell(String content) {
-		super(content);
+	private String userInput = "";
+
+	public ValueCell(String userInput) {
+		super(userInput);
+		this.userInput = userInput;
+		setRealCell(userInput);
 	}
 
-	@Override
 	public double getDoubleValue() {
-		return 0;
+		return Double.parseDouble(userInput);
 	}
 }

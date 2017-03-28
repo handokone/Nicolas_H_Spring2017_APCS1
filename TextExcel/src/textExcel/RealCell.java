@@ -10,17 +10,41 @@ public abstract class RealCell implements Cell{
 	
 	public String abbreviatedCellText(){
 		String abbreviatedText = "";
-		char[] charArray = userInput.toCharArray();
-		
-		if(userInput.contains("\"")){
-			for(int i = 1; i < userInput.length() - 1; i++){
-				abbreviatedText += charArray[i];
+		if(userInput.length() < 10){
+			if(userInput.contains("%")){
+				abbreviatedText = userInput.substring(0, userInput.indexOf(".")) + "%";
+				return (abbreviatedText + "          ").substring(0, 10);
 			}
+			if(userInput.equals("0.0")){
+				abbreviatedText = userInput;
+				return (abbreviatedText + "          ").substring(0, 10);
+			}
+			if(!userInput.contains(".") && !userInput.contains("%") && !userInput.contains("(")){
+				abbreviatedText = userInput + ".0";
+				return (abbreviatedText + "          ".substring(0, 10));
+			}
+			if(userInput.charAt(userInput.length() - 1) == '.'){
+				userInput += "0";
+			}
+		}else if(userInput.length() > 10){
+			return (abbreviatedText + "          ").substring(0, 10);
 		}
-		return (abbreviatedText + "          ").substring(0, 10);
+		return (userInput + "          ").substring(0, 10); 
 	}
 	
 	public String fullCellText(){
+		RealCell cell;
+		if(userInput.equals("0")){
+			return "0";
+		}
+		if(userInput.contains("%")){
+			cell = new PercentCell(userInput);
+		}else if(userInput.contains("(")){
+			cell = new FormulaCell(userInput);
+		}else{
+			cell = new ValueCell(userInput);
+		}
+		
 		return userInput;
 	}
 	
@@ -28,6 +52,10 @@ public abstract class RealCell implements Cell{
 	
 	public void setRealCell(String inputVal){
 		userInput = inputVal;
+	}
+	
+	public String getRealCell(){
+		return userInput;
 	}
 
 }
