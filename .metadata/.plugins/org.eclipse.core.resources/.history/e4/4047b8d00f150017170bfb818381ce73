@@ -24,11 +24,8 @@ public abstract class RealCell implements Cell{
 				return (abbreviatedText + "          ").substring(0, 10);
 			}
 			if(!userInput.contains("(")){
-				for(int i = userInput.length() - 1; i > 0; i--){
-					if(userInput.charAt(userInput.length() - 1) == '0'){
-						if(userInput.charAt(userInput.length() - 2) == '0'){
-							userInput = userInput.substring(0, userInput.length() - 1);
-						}
+				if(userInput.charAt(userInput.length() - 1) == '0'){
+					if(userInput.charAt(userInput.length() - 2) == '0'){
 						userInput = userInput.substring(0, userInput.length() - 1);
 					}
 				}

@@ -27,9 +27,8 @@ public abstract class RealCell implements Cell{
 				for(int i = userInput.length() - 1; i > 0; i--){
 					if(userInput.charAt(userInput.length() - 1) == '0'){
 						if(userInput.charAt(userInput.length() - 2) == '0'){
-							userInput = userInput.substring(0, userInput.length() - 1);
+							userInput = userInput.substring(0, userInput.length() - 2);
 						}
-						userInput = userInput.substring(0, userInput.length() - 1);
 					}
 				}
 			}

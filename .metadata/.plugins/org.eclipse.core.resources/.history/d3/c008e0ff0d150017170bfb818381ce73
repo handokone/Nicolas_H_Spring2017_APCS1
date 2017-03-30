@@ -21,17 +21,7 @@ public abstract class RealCell implements Cell{
 			}
 			if(!userInput.contains(".") && !userInput.contains("%") && !userInput.contains("(")){
 				abbreviatedText = userInput + ".0";
-				return (abbreviatedText + "          ").substring(0, 10);
-			}
-			if(!userInput.contains("(")){
-				for(int i = userInput.length() - 1; i > 0; i--){
-					if(userInput.charAt(userInput.length() - 1) == '0'){
-						if(userInput.charAt(userInput.length() - 2) == '0'){
-							userInput = userInput.substring(0, userInput.length() - 1);
-						}
-						userInput = userInput.substring(0, userInput.length() - 1);
-					}
-				}
+				return (abbreviatedText + "          ".substring(0, 10));
 			}
 			if(userInput.charAt(userInput.length() - 1) == '.'){
 				userInput += "0";
@@ -39,7 +29,7 @@ public abstract class RealCell implements Cell{
 		}else if(userInput.length() > 10){
 			return (abbreviatedText + "          ").substring(0, 10);
 		}
-		return (userInput + "          ").substring(0, 10); 
+		return userInput; 
 	}
 	
 	public String fullCellText(){
