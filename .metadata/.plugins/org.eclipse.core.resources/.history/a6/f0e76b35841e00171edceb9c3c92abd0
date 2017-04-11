@@ -1,0 +1,38 @@
+package textExcel;
+
+public class FormulaCell extends RealCell{
+
+	private String userInput = "";
+	
+	public FormulaCell(String formula){
+		super(formula);
+		userInput = formula;
+	}
+	
+	public String abbreviatedCellText(){
+		return (getDoubleValue() + "          ").substring(0, 10);
+	}
+	
+	public String fullCellText(){
+		return super.fullCellText();
+	}
+	public double getDoubleValue(){
+		double num;
+		String form = userInput.substring(2, userInput.length() - 2);
+		String[] formulaArr = form.split(" ");
+		double finalVal = Double.parseDouble(formulaArr[0]);
+		for(int i = 2; i < formulaArr.length; i += 2){
+			num = Double.parseDouble(formulaArr[i]);
+			if(formulaArr[i - 1].equals("*")){
+				finalVal *= num;
+			}else if(formulaArr[i - 1].equals("/")){
+				finalVal /= num;
+			}else if(formulaArr[i - 1].equals("+")){
+				finalVal += num;
+			}else if(formulaArr[i - 1].equals("-")){
+				finalVal -= num;
+			}
+		}
+		return finalVal;
+	}
+}

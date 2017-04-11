@@ -16,10 +16,9 @@ public abstract class RealCell implements Cell{
 				return (abbreviatedText + "          ").substring(0, 10);
 			}
 			if(userInput.equals("0.0")){
-				abbreviatedText = userInput;
-				return (abbreviatedText + "          ").substring(0, 10);
+				return (userInput + "          ").substring(0, 10);
 			}
-			if(!userInput.contains(".") && !userInput.contains("%") && !userInput.contains("(")){
+			if(!userInput.contains(".") && !userInput.contains("(")){
 				abbreviatedText = userInput + ".0";
 				return (abbreviatedText + "          ").substring(0, 10);
 			}
