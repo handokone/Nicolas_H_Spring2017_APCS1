@@ -1,4 +1,6 @@
 package textExcel;
+import java.io.*;
+import java.util.*;
 
 public class Spreadsheet implements Grid
 {
@@ -16,9 +18,13 @@ public class Spreadsheet implements Grid
 
 	public String processCommand(String command)
 	{
-		command = command.trim();
 		String[] commandSplit = command.split(" ");
-		
+		if(command.toLowerCase().contains("save")){
+			return (writeToFile(commandSplit[1]));
+		}
+		if(command.toLowerCase().contains("open")){
+			return (readFromFile(commandSplit[1]));
+		}
 		if(command.equals("")){
 			return "";
 		}else if(command.length() <= 3){
@@ -109,6 +115,56 @@ public class Spreadsheet implements Grid
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
 		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
 	}
-
+	
+	private String writeToFile(String filename){
+		PrintStream outputFile;
+		try {
+			outputFile = new PrintStream(new File(filename));
+		}
+		catch (FileNotFoundException e){
+			return "File not found: " + filename;
+		}
+		String data = "";
+		for(int i = 0; i < 20; i++){
+			for(int j = 0; j < 12; j++){
+				//Make sure it's not an Empty Cell
+				//Only cells with data are saved
+				if(!(arrayExcell[i][j] instanceof EmptyCell)){
+					if(arrayExcell[i][j] instanceof TextCell){
+						data += "TextCell" + ",";
+					}else if(arrayExcell[i][j] instanceof ValueCell){
+						data += "ValueCell" + ",";
+					}else if(arrayExcell[i][j] instanceof PercentCell){
+						data += "PercentCell" + ",";
+					}else{
+						data += "FormulaCell" + ",";
+					}
+					outputFile.println((char)(j + 'A') + "" + (i + 1) + "," + data + arrayExcell[i][j].fullCellText());
+				}
+				data = "";
+			}
+		}
+		outputFile.close();
+		return "";
+	}
+	
+	private String readFromFile(String filename){
+		Scanner inputFile;
+		try {
+			inputFile = new Scanner(new File(filename));
+		}
+		catch (FileNotFoundException e){
+			return "File not found: " + filename;
+		}
+		while(inputFile.hasNextLine()){
+			String[] data = inputFile.nextLine().split(",", 3);
+			if(data[1].equals("PercentCell")){
+				data[2] = (Double.parseDouble(data[2]) * 100) + "%";
+			}
+			assignCell(data[2], data[0]);
+		}
+		inputFile.close();
+		return getGridText();
+	}
 
 }

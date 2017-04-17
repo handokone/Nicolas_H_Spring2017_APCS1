@@ -36,7 +36,7 @@ public abstract class RealCell implements Cell{
 				userInput += "0";
 			}
 		}else if(userInput.length() > 10){
-			return (abbreviatedText + "          ").substring(0, 10);
+			return (userInput + "          ").substring(0, 10);
 		}
 		return (userInput + "          ").substring(0, 10); 
 	}
