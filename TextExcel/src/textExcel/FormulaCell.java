@@ -35,4 +35,8 @@ public class FormulaCell extends RealCell{
 		}
 		return finalVal;
 	}
+	
+	public double sum(String locStart, String changed, String locEnd){
+		
+	}
 }
