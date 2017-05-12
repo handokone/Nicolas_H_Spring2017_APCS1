@@ -60,7 +60,9 @@ public abstract class RealCell implements Cell{
 		return cell.getDoubleValue() + "";
 	}
 	
-	public abstract double getDoubleValue();
+	public double getDoubleValue() {
+		return Double.parseDouble(userInput);
+	}
 	
 	public void setRealCell(String inputVal){
 		userInput = inputVal;

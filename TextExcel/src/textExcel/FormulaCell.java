@@ -3,10 +3,12 @@ package textExcel;
 public class FormulaCell extends RealCell{
 
 	private String userInput = "";
+	private Spreadsheet spread;
 	
-	public FormulaCell(String formula){
+	public FormulaCell(String formula, Spreadsheet spr){
 		super(formula);
 		userInput = formula;
+		spread = spr;
 	}
 	
 	public String abbreviatedCellText(){
@@ -36,7 +38,7 @@ public class FormulaCell extends RealCell{
 		return finalVal;
 	}
 	
-	public double sum(String locStart, String changed, String locEnd){
+	//public double sum(String locStart, String changed, String locEnd){
 		
-	}
+	//}
 }
