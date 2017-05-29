@@ -103,7 +103,7 @@ public class Spreadsheet implements Grid
 		if(userInput.contains("\"")){
 			arrayExcell[assign.getRow()][assign.getCol()] = new TextCell(userInput);
 		}else if(userInput.contains("(")){
-			arrayExcell[assign.getRow()][assign.getCol()] = new FormulaCell(userInput);
+			arrayExcell[assign.getRow()][assign.getCol()] = new FormulaCell(userInput, this);
 		}else if(userInput.contains("%")){
 			arrayExcell[assign.getRow()][assign.getCol()] = new PercentCell(userInput);
 		}else{
