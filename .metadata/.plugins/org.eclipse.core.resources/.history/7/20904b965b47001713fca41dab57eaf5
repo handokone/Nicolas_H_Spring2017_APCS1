@@ -1,0 +1,33 @@
+package textExcel;
+
+public class ValueCell extends RealCell{
+	
+	public ValueCell(String value) { //inherits whatever the realcell constructor was
+		super(value);
+	}
+	
+	public String abbreviatedCellText() {
+		return super.abbreviatedCellText(); //inherits realcell method of this method
+	}
+	
+	public String fullCellText() {
+		return super.fullCellText(); //inherits realcell method of this method
+	}
+	
+	public double getDoubleValue() {
+		return super.getDoubleValue(); //inherits realcell method of this method
+	}
+	/*
+	private String userInput = "";
+
+	public ValueCell(String userInput) {
+		super(userInput);
+		this.userInput = userInput;
+		setRealCell(userInput);
+	}
+
+	public double getDoubleValue() {
+		return Double.parseDouble(userInput);
+	}
+	*/
+}

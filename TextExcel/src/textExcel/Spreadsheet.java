@@ -1,3 +1,5 @@
+//Nicolas Handoko first period. 
+//Controls spreadsheet
 package textExcel;
 import java.io.*;
 import java.util.*;
@@ -8,6 +10,7 @@ public class Spreadsheet implements Grid
 	private int cols = 12;
 	private Cell[][] arrayExcell = new Cell[20][12];
 	
+	//Constructor, set every cell as an EmptyCell initially. 
 	public Spreadsheet(){
 		for(int i = 0; i < 20; i++){
 			for(int j = 0; j < 12; j++){
@@ -16,21 +19,26 @@ public class Spreadsheet implements Grid
 		}
 	} 
 
+	//Process the command passed. 
 	public String processCommand(String command)
 	{
 		String[] commandSplit = command.split(" ");
+		//Saves file if command contains "save"
 		if(command.toLowerCase().contains("save")){
 			return (writeToFile(commandSplit[1]));
 		}
+		//Open files if command contains "open"
 		if(command.toLowerCase().contains("open")){
 			return (readFromFile(commandSplit[1]));
 		}
+		//If command is empty, return an empty string. 
 		if(command.equals("")){
 			return "";
 		}else if(command.length() <= 3){
 			return checkCell(commandSplit[0].toUpperCase());
 		}else if(commandSplit.length >= 3){
 			String input = commandSplit[2];
+			//Add spaces and next part of value.
 			for(int i = 3; i < commandSplit.length; i++){
 				input += " " + commandSplit[i];
 			}
@@ -38,6 +46,7 @@ public class Spreadsheet implements Grid
 			assignCell(input, cellName);
 			return getGridText();
 		}else if(commandSplit[0].toLowerCase().contains("clear")){
+			//If it's only "clear", clear entire spreadsheet and replaces every cell with EmptyCells
 			if(commandSplit.length == 1){
 				for(int i = 0; i < 20; i++){
 					for(int j = 0; j < 12; j++){
@@ -45,6 +54,7 @@ public class Spreadsheet implements Grid
 					}
 				}
 				return getGridText();
+			//If not, then only clear the specified cell. 
 			}else {
 				clearOneCell(commandSplit[1].toUpperCase());
 				return getGridText();
@@ -52,12 +62,14 @@ public class Spreadsheet implements Grid
 		}
 		return "";
 	}
-
+	
+	//Returns row number
 	public int getRows()
 	{
 		return this.rows;
 	}
 
+	//Returns col number
 	public int getCols()
 	{
 		return this.cols;
@@ -67,7 +79,8 @@ public class Spreadsheet implements Grid
 	{
 		return arrayExcell[loc.getRow()][loc.getCol()];
 	}
-
+	
+	//Creates the spreadsheet design
 	public String getGridText()
 	{
 		String gridText = "   |";
@@ -93,17 +106,19 @@ public class Spreadsheet implements Grid
 		return gridText;
 	}
 	
+	//This method is called if command is "clear_" with a specified cell name. 
 	public void clearOneCell(String cellName){
 		SpreadsheetLocation clearACell = new SpreadsheetLocation(cellName);
 		arrayExcell[clearACell.getRow()][clearACell.getCol()] = new EmptyCell();
 	}
 	
+	//Assigns a certain value inside a cell when given a name and value. 
 	public void assignCell(String userInput, String cellName){
 		SpreadsheetLocation assign = new SpreadsheetLocation(cellName);
 		if(userInput.contains("\"")){
 			arrayExcell[assign.getRow()][assign.getCol()] = new TextCell(userInput);
 		}else if(userInput.contains("(")){
-			arrayExcell[assign.getRow()][assign.getCol()] = new FormulaCell(userInput, this);
+			arrayExcell[assign.getRow()][assign.getCol()] = new FormulaCell(userInput, arrayExcell);
 		}else if(userInput.contains("%")){
 			arrayExcell[assign.getRow()][assign.getCol()] = new PercentCell(userInput);
 		}else{
@@ -111,11 +126,13 @@ public class Spreadsheet implements Grid
 		}
 	}
 	
+	//Returns whatever is inside a call with the given cell name. 
 	public String checkCell(String cellName){
 		SpreadsheetLocation cellCheck = new SpreadsheetLocation(cellName); 
 		return arrayExcell[cellCheck.getRow()][cellCheck.getCol()].fullCellText();
 	}
 	
+	//File saving 
 	private String writeToFile(String filename){
 		PrintStream outputFile;
 		try {
@@ -148,6 +165,7 @@ public class Spreadsheet implements Grid
 		return "";
 	}
 	
+	//Opening a saved file
 	private String readFromFile(String filename){
 		Scanner inputFile;
 		try {
@@ -158,6 +176,7 @@ public class Spreadsheet implements Grid
 		}
 		while(inputFile.hasNextLine()){
 			String[] data = inputFile.nextLine().split(",", 3);
+			//Makes percent cell in the form of "#" followed by "%"
 			if(data[1].equals("PercentCell")){
 				data[2] = (Double.parseDouble(data[2]) * 100) + "%";
 			}

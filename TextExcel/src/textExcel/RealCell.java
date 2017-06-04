@@ -4,10 +4,12 @@ public abstract class RealCell implements Cell{
 	
 	private String userInput = "";
 	
+	//Constructor
 	public RealCell(String content){
 		userInput = content;
 	}
 	
+	//Concatenate string into 10 characters long. 
 	public String abbreviatedCellText(){
 		String abbreviatedText = "";
 		if(userInput.length() < 10){
@@ -41,6 +43,7 @@ public abstract class RealCell implements Cell{
 		return (userInput + "          ").substring(0, 10); 
 	}
 	
+	//Return whatever is inside the cell as a full string, even if longer than 10 characters. 
 	public String fullCellText(){
 		RealCell cell;
 		if(userInput.equals("0")){
@@ -58,14 +61,17 @@ public abstract class RealCell implements Cell{
 		return cell.getDoubleValue() + "";
 	}
 	
+	//Parse the value passed as a double
 	public double getDoubleValue() {
 		return Double.parseDouble(userInput);
 	}
 	
+	//Set value passed into the RealCell
 	public void setRealCell(String inputVal){
 		userInput = inputVal;
 	}
 	
+	//Return the value inside the RealCell
 	public String getRealCell(){
 		return userInput;
 	}

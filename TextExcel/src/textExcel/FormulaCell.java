@@ -1,137 +1,165 @@
+//Nicolas Handoko first period
+//Class represented the formula cell, used for arithmetic expressions. 
+//Thank you Michael Chang, Leonard Wang, and Ryan Sun for your help with this :D 
+
 package textExcel;
 
 public class FormulaCell extends RealCell{
-
+	
 	private String userInput = "";
-	private Spreadsheet spr;
-	//private Cell[][] sheet;
+	private Cell[][] sheet;
 	
-	/*public FormulaCell(String formula){ 
+	//Constructor
+	public FormulaCell(String formula, Cell[][] arr){
 		super(formula);
 		userInput = formula;
-	}*/
-	
-	public FormulaCell(String formula, Spreadsheet spread){/*, Cell[][] arr){*/
-		super(formula);
-		userInput = formula;
-		spr = spread;
-		//sheet = arr;
+		sheet = arr;
 	}
 	
 	//from RealCell
+	//Returns the inside of a cell, concatenated to only 10 characters long. 
 	public String abbreviatedCellText(){
+		//Add ten spaces in case string doesn't have at least 10 spaces. 
 		return (getDoubleValue() + "          ").substring(0, 10);
 	}
 	
 	//from RealCell
 	public String fullCellText(){
+		//Just returns the whole entire cell, even if it's more than 10 characters long. 
 		return userInput;
 	}
+	
+	//Return the value inside the cell as a double. 
 	public double getDoubleValue(){
 		double num = 0.0;
-		//Gets rid of parenthesis
+		//Gets rid of parenthesis in the formula. 
 		String form = userInput.substring(2, userInput.length() - 2);
-		//Organize formula in an array of operators and operands. 
-		String[] formulaArr = form.split(" ");
-		//See if trying to find sum or average. 
-		if(form.toUpperCase().indexOf("SUM") != -1){
-			return sum(formulaArr[1]);
+		String[] formulaArr = form.trim().split(" ");
+		//Just in case if declaration is (for example) A2 = ( 2 );
+		if(formulaArr.length == 1){
+			return Double.parseDouble(form);
+		//If index of SUM is -1, then that means we're not trying to find the sum. 
+		//Upper case in case of (ex: sUm)
+		}else if(form.toUpperCase().indexOf("SUM") != -1){
+			String[] range = formulaArr[1].toUpperCase().split("-");
+			return sum(range[0], range[0], range[1]);
+		//If index of AVG is -1, then that means we're not trying to find the avg. 
+		//Upper case in case of (ex: AvG)
 		}else if(form.toUpperCase().indexOf("AVG") != -1){
-			return avg(formulaArr[1]);
-		}
-		/*else{
-			double num1 = 0.0;
-			for(int i = 0; i < formulaArr.length; i += 2){
-				if(formulaArr[i].toUpperCase().charAt(0) >= 'A' && formulaArr[i].toUpperCase().charAt(0) <= 'L'){
-					formulaArr[i] = cellValue(formulaArr[i]) + "";
+			String[] range = formulaArr[1].toUpperCase().split("-");
+			//Location of the first cell in the range
+			//This one --->A5-B12 (example)
+			SpreadsheetLocation initialCell = new SpreadsheetLocation(range[0]);
+			//Location of the last cell in the range
+			//A5-B12<--- This one (example)
+			SpreadsheetLocation endingCell = new SpreadsheetLocation(range[1]);
+			//starting value for outer loop, which is col letter number of first range
+			int firstName = initialCell.getCol();
+			//ending value for outer loop, which is col letter number of ending range.
+			int secondName = endingCell.getCol();
+			//starting value for inner loop, which is row number of the first range. 
+			int firstCellNum = initialCell.getRow();
+			//ending value for inner loop, which is row number of the ending range. 
+			int secondCellNum = endingCell.getRow();
+			//Counter used as a divisor
+			int count = 0;
+			//Nested for loop in order to find how many cells are included in the cell range. 
+			for (int i = firstName; i <= secondName; i++) {
+				for (int j = firstCellNum; j <= secondCellNum; j++) {
+					//Increment counter every time it goes through the loop to keep track how many cells in the cell range.
+					count++;
 				}
 			}
-			num1 = Double.parseDouble(formulaArr[0]);
-			for(int i = 2; i < formulaArr.length; i += 2){
-				if(formulaArr[i - 1].equals("*")){
-					num1 *= Double.parseDouble(formulaArr[i]);
-				}else if(formulaArr[i - 1].equals("/")){
-					num1 /= Double.parseDouble(formulaArr[i]);
-				}else if(formulaArr[i - 1].equals("+")){
-					num1 += Double.parseDouble(formulaArr[i]);
-				}else if(formulaArr[i - 1].equals("-")){
-					num1 -= Double.parseDouble(formulaArr[i]);
-				}
-			}
-			return num1;
-		}*/
-		//Checks if first one is a cell or a number
-		if(formulaArr[0].toUpperCase().charAt(0) >= 'A' && formulaArr[0].toUpperCase().charAt(0) <= 'L'){
-			SpreadsheetLocation cellLoc = new SpreadsheetLocation(formulaArr[0]);
-			num = ((RealCell) spr.getCell(cellLoc)).getDoubleValue();
+			//Used the sum method because average is the sum / # of inputs.
+			return sum(range[0], range[0], range[1]) / count;
 		}else{
-			num = Double.parseDouble(formulaArr[0]);
-		}
-		//double finalVal = Double.parseDouble(formulaArr[0]);
-		for(int i = 2; i < formulaArr.length; i += 2){
-			double num1 = 0.0;
-			String a = formulaArr[i].toUpperCase();
-			//Check if it's a number or a cell
-			if(a.charAt(0) >= 'A' && a.charAt(0) <= 'L'){
-				SpreadsheetLocation loc = new SpreadsheetLocation(a);
-				num1 = ((RealCell) spr.getCell(loc)).getDoubleValue();
+			//check if it's a cell. 
+			if(formulaArr[0].toUpperCase().charAt(0) >= 'A' && formulaArr[0].toUpperCase().charAt(0) <='L'){
+				SpreadsheetLocation cellLoc = new SpreadsheetLocation(formulaArr[0].toUpperCase());
+				//Check if instance of RealCell. 
+				if(sheet[cellLoc.getRow()][cellLoc.getCol()] instanceof RealCell){
+					//Casts to RealCell to use RealCell's getDoubleValue().
+					num = ((RealCell) sheet[cellLoc.getRow()][cellLoc.getCol()]).getDoubleValue();
+				}
+			//If not, then it's a number. 
 			}else{
-				num1 = Double.parseDouble(a);
+				num = Double.parseDouble(formulaArr[0]);
 			}
-			if(formulaArr[i - 1].equals("*")){
-				num *= num1;
-			}else if(formulaArr[i - 1].equals("/")){
-				num /= num1;
-			}else if(formulaArr[i - 1].equals("+")){
-				num += num1;
-			}else if(formulaArr[i - 1].equals("-")){
-				num -= num1;
+			//Goes through value
+			for(int i = 2; i < formulaArr.length; i += 2 ){
+				double num1 = 0.0;
+				//Change to upper case because if it is a cell instead of a number, the cell name could be in a 
+				//non-supported/weird format.
+				//Ex: f5
+				String a = formulaArr[i].toUpperCase();
+				//Check if it's a cell. 
+				if(a.charAt(0) >= 'A' && a.charAt(0) <='L'){
+						SpreadsheetLocation loc = new SpreadsheetLocation(a);
+						//Check if instance of RealCell. 
+						if(sheet[loc.getRow()][loc.getCol()] instanceof RealCell){
+							//casts to RealCell to use RealCell's getDoubleValue()
+							num1 = ((RealCell) sheet[loc.getRow()][loc.getCol()]).getDoubleValue();
+						}
+				//If not, then it's a number. 
+				}else{
+					num1 = Double.parseDouble(a);
+				}
+				//Arithmetic expressions in the command. 
+				if(formulaArr[i - 1].equals("*")){
+					num *=  num1;
+				}else if(formulaArr[i - 1].equals("/")){
+					num /= num1;
+				}else if(formulaArr[i - 1].equals("+")){
+					num += num1;
+				}else{
+					num -= num1;
+				}
 			}
 		}
 		return num;
 	}
 	
-	public double cellValue(String cellName){
-		SpreadsheetLocation loc = new SpreadsheetLocation(cellName);
-		double a = ((RealCell) spr.getCell(loc)).getDoubleValue();
-		return a;
-	}
-	
-	public double sum(String cellRange){
-		String[] cell = cellRange.split("-");
-		double sum = 0.0;
-		char firstName = cell[0].toLowerCase().charAt(0);
-		char secondName = cell[1].toLowerCase().charAt(0);
-		int firstCellNum = Integer.parseInt(cell[0].substring(1));
-		int secondCellNum = Integer.parseInt(cell[1].substring(1));
-		for(char i = firstName; i <= secondName; i++){
-			for(int j = firstCellNum; j <= secondCellNum; j++){
-				SpreadsheetLocation loc = new SpreadsheetLocation(i + "" + j + "");
-				Cell grid = spr.getCell(loc);
-				sum += ((RealCell) grid).getDoubleValue();
+	//To find the sum of a cell range, returns a double.
+	//Recursive method
+	//Calls itself so it can go through all the cell range using recursion without using long nested loops. 
+	public double sum(String begin, String loc1, String loc2){	
+		SpreadsheetLocation loc = new SpreadsheetLocation(loc1);
+		Cell excel = sheet[loc.getRow()][loc.getCol()];
+		//Check if the two cell names are the same
+		if(loc1.equals(loc2)){
+			if(excel instanceof RealCell){
+				return ((RealCell) excel).getDoubleValue();
+			}else{
+				return 0.0;
 			}
-		}
-		return sum;
-	}
-	
-	public double avg(String cellRange){
-		String[] cell = cellRange.split("-");
-		double sum = 0.0;
-		int div = 0;
-		char firstName = cell[0].toLowerCase().charAt(0);
-		char secondName = cell[1].toLowerCase().charAt(0);
-		int firstCellNum = Integer.parseInt(cell[0].substring(1));
-		int secondCellNum = Integer.parseInt(cell[1].substring(1));
-		for(char i = firstName; i <= secondName; i++){
-			for(int j = firstCellNum; j <= secondCellNum; j++){
-				SpreadsheetLocation loc = new SpreadsheetLocation(i + "" + j + "");
-				Cell grid = spr.getCell(loc);
-				sum += ((RealCell) grid).getDoubleValue();
-				div++;
+		//Else, if not the same, go through the whole entire cell range provided in loc1 and loc2.  
+		}else{
+			//Moves horizontally if row number is the same
+				if(Integer.parseInt(loc1.substring(1)) == Integer.parseInt(loc2.substring(1))){
+				//Changes the col letter but keeps the row number a constant. 
+				loc1 = ((char)(loc1.charAt(0) + 1)) + "" + begin.substring(1);
+				if(excel instanceof RealCell){
+					return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+				}else{
+					return sum(begin, loc1, loc2);
+				}
+			//Moves vertically if column letter is the same.
+			}else if(Integer.parseInt(loc1.substring(1)) < Integer.parseInt(loc2.substring(1))){
+				//Changes the row number but keeps the col letter a constant. 
+				loc1 = Character.toString(loc1.charAt(0)) + (Integer.parseInt(loc1.substring(1)) + 1);
+				if(excel instanceof RealCell){
+					return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+					}else{
+					return sum(begin, loc1, loc2);
+				}
 			}
+		}		
+		//Needs extra return statements to run. 
+		if(excel instanceof RealCell){
+			return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+		}else{
+			return sum(begin, loc1, loc2);
 		}
-		sum = sum/div;
-		return sum;
+		
 	}
-	
 }

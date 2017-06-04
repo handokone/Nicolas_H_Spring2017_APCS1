@@ -1,0 +1,145 @@
+package textExcel;
+
+public class FormulaCell extends RealCell{
+	private String userInput = "";
+	private Cell[][] sheet;
+	public FormulaCell(String formula, Cell[][] arr){
+		super(formula);
+		userInput = formula;
+		sheet = arr;
+	}
+	
+	//from RealCell
+	public String abbreviatedCellText(){
+		return (getDoubleValue() + "          ").substring(0, 10);
+	}
+	
+	//from RealCell
+	public String fullCellText(){
+		return userInput;
+	}
+	
+	public double getDoubleValue(){
+		double sum = 0.0;
+		//Gets rid of parenthesis in the formula. 
+		String form = userInput.substring(2, userInput.length() - 2);
+		String[] formulaArr = form.trim().split(" ");
+		//Just in case if declaration is (for example) A2 = ( 2 );
+		if(formulaArr.length == 1){
+			return Double.parseDouble(form);
+		}else if(form.toUpperCase().indexOf("SUM") != -1){
+			String[] range = formulaArr[1].toUpperCase().split("-");
+			return sum(range[0], range[0], range[1]);
+		}else if(form.toUpperCase().indexOf("AVG") != -1){
+			String[] range = formulaArr[1].toUpperCase().split("-");
+			//starting value for outer loop
+			char firstName = (range[0].toLowerCase()).charAt(0);
+			//ending value for outer loop
+			char secondName = (range[1].toLowerCase()).charAt(0);
+			//starting value for inner loop
+			int firstCellNum = Integer.parseInt(range[0].substring(1));
+			//ending value for inner loop
+			int secondCellNum = Integer.parseInt(range[1].substring(1));
+			//Counter used as a divisor
+			int count = 0;
+			//Nester for loop in order to find how many cells are included in the cell range. 
+			for (char i = firstName; i <= secondName; i++) {
+				for (int j = firstCellNum; j <= secondCellNum; j++) {
+					count++;
+				}
+			}
+			//Used the sum method because average is the sum / # of inputs.
+			return sum(range[0], range[0], range[1]) / count;
+		}else{
+			//check if number or cell.
+			if(formulaArr[0].toUpperCase().charAt(0) >= 'A' && formulaArr[0].toUpperCase().charAt(0) <='L'){
+				SpreadsheetLocation cellLoc = new SpreadsheetLocation(formulaArr[0].toUpperCase());
+				if(sheet[cellLoc.getRow()][cellLoc.getCol()] instanceof RealCell){
+					sum = ((RealCell) sheet[cellLoc.getRow()][cellLoc.getCol()]).getDoubleValue();
+				}
+			}else{
+				sum = Double.parseDouble(formulaArr[0]);
+			}
+			for(int i = 2; i < formulaArr.length; i += 2 ){
+				//check if number or cell
+				double num = 0.0;
+				String a = formulaArr[i].toUpperCase();
+				if(a.charAt(0) >= 'A' && a.charAt(0) <='L'){
+						SpreadsheetLocation loc = new SpreadsheetLocation(a);
+						if(sheet[loc.getRow()][loc.getCol()] instanceof RealCell){
+							//casts to RealCell to use RealCell's getDoubleValue()
+							num = ((RealCell) sheet[loc.getRow()][loc.getCol()]).getDoubleValue();
+						}
+				}else{
+					num = Double.parseDouble(a);
+				}
+				if(formulaArr[i - 1].equals("/")){
+					sum /=  num;
+				}else if(formulaArr[i - 1].equals("*")){
+					sum *= num;
+				}else if(formulaArr[i - 1].equals("+")){
+					sum += num;
+				}else{
+					sum -= num;
+				}
+			}
+		}
+		return sum;
+	}
+	
+	public double sum(String begin, String loc1, String loc2){	
+		SpreadsheetLocation loc = new SpreadsheetLocation(loc1);
+		Cell excel = sheet[loc.getRow()][loc.getCol()];
+		//base case
+		if(loc1.equals(loc2)){
+			if(excel instanceof RealCell){
+				return ((RealCell) excel).getDoubleValue();
+			}else{
+				return 0.0;
+			}
+		}else if(loc1.charAt(0) == loc2.charAt(0)){
+			loc1 = loc1.charAt(0) + (Integer.parseInt(loc1.substring(1)) + 1) + "";
+			if(excel instanceof RealCell){
+				return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+			}else{
+				return sum(begin, loc1, loc2);
+			}
+		}else{
+			loc1 = (loc1.charAt(0) + 1) + begin.substring(1);
+			if(excel instanceof RealCell){
+				return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+			}else{
+				return sum(begin, loc1, loc2);
+			}
+		}
+		/*
+		//Case 1: if the columns aren't the same, but the rows are, move horizontally
+		if(Character.toUpperCase(begin.charAt(0)) != Character.toUpperCase(loc2.charAt(0)) 
+				&& Integer.parseInt(begin.substring(1)) == Integer.parseInt(loc2.substring(1))){
+			loc1 = ((char)(loc1.charAt(0) + 1)) + begin.substring(1);
+			//if the columns are the same,but the rows are not, move vertically
+		}else if(Character.toUpperCase(begin.charAt(0)) == Character.toUpperCase(loc2.charAt(0))
+				&& Integer.parseInt(begin.substring(1)) <= Integer.parseInt(loc2.substring(1))){
+			
+			loc1 = Character.toString(begin.charAt(0)) + (Integer.parseInt(loc1.substring(1)) + 1);
+			
+			//if the columns and the rows aren't the same, move through all of the cells
+		}else{
+			//when row is less than the ending row, keep going down
+			if(Integer.parseInt(loc1.substring(1)) < Integer.parseInt(loc2.substring(1))){
+				loc1 = Character.toString(loc1.charAt(0)) + (Integer.parseInt(loc1.substring(1)) + 1);
+				//if the rows are the same, reset and move to next column
+			}else if(Integer.parseInt(loc1.substring(1)) == Integer.parseInt(loc2.substring(1))){
+				loc1 = ((char)(loc1.charAt(0) + 1)) + "" + begin.substring(1);
+			}
+		}
+		
+		//gets the value of the cell and keeps it and returns it
+		if(excel instanceof RealCell){
+			return ((RealCell) excel).getDoubleValue() + sum(begin, loc1, loc2);
+		}else{
+			return sum(begin, loc1, loc2);
+		}
+		*/
+	}
+}

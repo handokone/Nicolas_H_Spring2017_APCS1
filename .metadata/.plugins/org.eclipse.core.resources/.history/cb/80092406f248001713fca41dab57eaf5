@@ -1,0 +1,16 @@
+package textExcel;
+
+public class ValueCell extends RealCell{
+	
+	private String userInput = "";
+
+	public ValueCell(String userInput) {
+		super(userInput);
+		this.userInput = userInput;
+		setRealCell(userInput);
+	}
+
+	public double getDoubleValue() {
+		return Double.parseDouble(userInput);
+	}
+}
