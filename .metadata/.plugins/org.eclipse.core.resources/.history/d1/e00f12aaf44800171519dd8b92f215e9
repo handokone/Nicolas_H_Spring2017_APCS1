@@ -1,0 +1,169 @@
+//Nicolas Handoko first period
+//Class represented the formula cell, used for arithmetic expressions. 
+//Thank you Michael Chang, Leonard Wang, and Ryan Sun for your help with this :D 
+
+package textExcel;
+
+public class FormulaCell extends RealCell{
+	
+	private String userInput = "";
+	private Cell[][] sheet;
+	
+	//Constructor
+	public FormulaCell(String formula, Cell[][] arr){
+		super(formula);
+		userInput = formula;
+		sheet = arr;
+	}
+	
+	//from RealCell
+	//Returns the inside of a cell, concatenated to only 10 characters long. 
+	public String abbreviatedCellText(){
+		//Add ten spaces in case string doesn't have at least 10 spaces. 
+		return (getDoubleValue() + "          ").substring(0, 10);
+	}
+	
+	//from RealCell
+	public String fullCellText(){
+		//Just returns the whole entire cell, even if it's more than 10 characters long. 
+		return userInput;
+	}
+	
+	//Return the value inside the cell as a double. 
+	public double getDoubleValue(){
+		double num = 0.0;
+		//Gets rid of parenthesis in the formula. 
+		String form = userInput.substring(2, userInput.length() - 2);
+		String[] formulaArr = form.trim().split(" ");
+		//Just in case if declaration is (for example) A2 = ( 2 );
+		if(formulaArr.length == 1){
+			return Double.parseDouble(form);
+		//If index of SUM is -1, then that means we're not trying to find the sum. 
+		//Upper case in case of (ex: sUm)
+		}else if(form.toUpperCase().indexOf("SUM") != -1){
+			//String[] range = formulaArr[1].toUpperCase().split("-");
+			return sum(formulaArr[1]);
+		//If index of AVG is -1, then that means we're not trying to find the avg. 
+		//Upper case in case of (ex: AvG)
+		}else if(form.toUpperCase().indexOf("AVG") != -1){
+			//String[] range = formulaArr[1].toUpperCase().split("-");
+			//Location of the first cell in the range
+			//This one --->A5-B12 (example)
+			SpreadsheetLocation initialCell = new SpreadsheetLocation(formulaArr[1].toUpperCase().substring(0, formulaArr[1].indexOf("-")));
+			//Location of the last cell in the range
+			//A5-B12<--- This one (example)
+			SpreadsheetLocation endingCell = new SpreadsheetLocation(formulaArr[1].toUpperCase().substring(formulaArr[1].indexOf("-") + 1));
+			//starting value for outer loop, which is col letter number of first range
+			int firstName = initialCell.getCol();
+			//ending value for outer loop, which is col letter number of ending range.
+			int secondName = endingCell.getCol();
+			//starting value for inner loop, which is row number of the first range. 
+			int firstCellNum = initialCell.getRow();
+			//ending value for inner loop, which is row number of the ending range. 
+			int secondCellNum = endingCell.getRow();
+			//Counter used as a divisor
+			int count = 0;
+			//Nested for loop in order to find how many cells are included in the cell range. 
+			for (int i = firstName; i <= secondName; i++) {
+				for (int j = firstCellNum; j <= secondCellNum; j++) {
+					//Increment counter every time it goes through the loop to keep track how many cells in the cell range.
+					count++;
+				}
+			}
+			//Used the sum method because average is the sum / # of inputs.
+			return sum(formulaArr[1]) / count;
+		}else{
+			//check if it's a cell. 
+			if(formulaArr[0].toUpperCase().charAt(0) >= 'A' && formulaArr[0].toUpperCase().charAt(0) <='L'){
+				SpreadsheetLocation cellLoc = new SpreadsheetLocation(formulaArr[0].toUpperCase());
+				//Check if instance of RealCell. 
+				if(sheet[cellLoc.getRow()][cellLoc.getCol()] instanceof RealCell){
+					//Casts to RealCell to use RealCell's getDoubleValue().
+					num = ((RealCell) sheet[cellLoc.getRow()][cellLoc.getCol()]).getDoubleValue();
+				}
+			//If not, then it's a number. 
+			}else{
+				num = Double.parseDouble(formulaArr[0]);
+			}
+			//Goes through value
+			for(int i = 2; i < formulaArr.length; i += 2 ){
+				double num1 = 0.0;
+				//Change to upper case because if it is a cell instead of a number, the cell name could be in a 
+				//non-supported/weird format.
+				//Ex: f5
+				String a = formulaArr[i].toUpperCase();
+				//Check if it's a cell. 
+				if(a.charAt(0) >= 'A' && a.charAt(0) <='L'){
+						SpreadsheetLocation loc = new SpreadsheetLocation(a);
+						//Check if instance of RealCell. 
+						if(sheet[loc.getRow()][loc.getCol()] instanceof RealCell){
+							//casts to RealCell to use RealCell's getDoubleValue()
+							num1 = ((RealCell) sheet[loc.getRow()][loc.getCol()]).getDoubleValue();
+						}
+				//If not, then it's a number. 
+				}else{
+					num1 = Double.parseDouble(a);
+				}
+				//Arithmetic expressions in the command. 
+				if(formulaArr[i - 1].equals("*")){
+					num *=  num1;
+				}else if(formulaArr[i - 1].equals("/")){
+					num /= num1;
+				}else if(formulaArr[i - 1].equals("+")){
+					num += num1;
+				}else{
+					num -= num1;
+				}
+			}
+		}
+		return num;
+	}
+	
+	//To find the sum of a cell range, returns a double.
+	//Recursive method
+	//Calls itself so it can go through all the cell range using recursion without using long nested loops. 
+	public double sum(String text){	
+		String[] range = text.split("-");
+		String begin = range[0];
+		String loc1 = range[0];
+		String loc2 = range[1];
+		SpreadsheetLocation loc = new SpreadsheetLocation(loc1);
+		Cell excel = sheet[loc.getRow()][loc.getCol()];
+		//Check if the two cell names are the same
+		if(loc1.equals(loc2)){
+			if(excel instanceof RealCell){
+				return ((RealCell) excel).getDoubleValue();
+			}else{
+				return 0.0;
+			}
+		//Else, if not the same, go through the whole entire cell range provided in loc1 and loc2.  
+		}else{
+			//Moves horizontally if row number is the same
+				if(Integer.parseInt(loc1.substring(1)) == Integer.parseInt(loc2.substring(1))){
+				//Changes the col letter but keeps the row number a constant. 
+				loc1 = ((char)(loc1.charAt(0) + 1)) + "" + begin.substring(1);
+				if(excel instanceof RealCell){
+					return ((RealCell) excel).getDoubleValue() + sum(begin + loc1 + loc2);
+				}else{
+					return sum(begin + loc1 + loc2);
+				}
+			//Moves vertically if column letter is the same.
+			}else if(Integer.parseInt(loc1.substring(1)) < Integer.parseInt(loc2.substring(1))){
+				//Changes the row number but keeps the col letter a constant. 
+				loc1 = Character.toString(loc1.charAt(0)) + (Integer.parseInt(loc1.substring(1)) + 1);
+				if(excel instanceof RealCell){
+					return ((RealCell) excel).getDoubleValue() + sum(begin + loc1 + loc2);
+					}else{
+					return sum(begin + loc1 + loc2);
+				}
+			}
+		}		
+		//Needs extra return statements to run. 
+		if(excel instanceof RealCell){
+			return ((RealCell) excel).getDoubleValue() + sum(begin + loc1 + loc2);
+		}else{
+			return sum(begin + loc1 + loc2);
+		}
+		
+	}
+}

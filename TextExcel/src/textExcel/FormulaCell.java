@@ -49,10 +49,10 @@ public class FormulaCell extends RealCell{
 			String[] range = formulaArr[1].toUpperCase().split("-");
 			//Location of the first cell in the range
 			//This one --->A5-B12 (example)
-			SpreadsheetLocation initialCell = new SpreadsheetLocation(range[0]);
+			SpreadsheetLocation initialCell = new SpreadsheetLocation(formulaArr[1].toUpperCase().substring(0, formulaArr[1].indexOf("-")));
 			//Location of the last cell in the range
 			//A5-B12<--- This one (example)
-			SpreadsheetLocation endingCell = new SpreadsheetLocation(range[1]);
+			SpreadsheetLocation endingCell = new SpreadsheetLocation(formulaArr[1].toUpperCase().substring(formulaArr[1].indexOf("-") + 1));
 			//starting value for outer loop, which is col letter number of first range
 			int firstName = initialCell.getCol();
 			//ending value for outer loop, which is col letter number of ending range.
